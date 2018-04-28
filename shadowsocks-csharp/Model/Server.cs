@@ -29,6 +29,8 @@ namespace Shadowsocks.Model
         public string plugin_args;
         public string remarks;
         public int timeout;
+        public int speed;
+        public int speed_index;
 
         public override int GetHashCode()
         {
@@ -49,9 +51,12 @@ namespace Shadowsocks.Model
             }
 
             string serverStr = $"{FormatHostName(server)}:{server_port}";
-            return remarks.IsNullOrEmpty()
+            var m = remarks.IsNullOrEmpty()
                 ? serverStr
                 : $"{remarks} ({serverStr})";
+            if (speed > 0)
+                m = m + $" - [{speed_index}] {speed}ms";
+            return m;
         }
 
         public string FormatHostName(string hostName)

@@ -271,6 +271,7 @@ namespace Shadowsocks.View
                     this.SeperatorItem = new MenuItem("-"),
                     this.ConfigItem = CreateMenuItem("Edit Servers...", new EventHandler(this.Config_Click)),
                     CreateMenuItem("Statistics Config...", StatisticsConfigItem_Click),
+                    CreateMenuItem("Speed Test", SpeedTestItem_Click),
                     new MenuItem("-"),
                     CreateMenuItem("Share Server Config...", new EventHandler(this.QRCodeItem_Click)),
                     CreateMenuItem("Scan QRCode from Screen...", new EventHandler(this.ScanQRCodeItem_Click)),
@@ -419,7 +420,7 @@ namespace Shadowsocks.View
             UpdateUpdateMenu();
         }
 
-        private void UpdateServersMenu()
+        private void UpdateServersMenu(bool reload = true)
         {
             var items = ServersItem.MenuItems;
             while (items[0] != SeperatorItem)
@@ -440,7 +441,7 @@ namespace Shadowsocks.View
             items.Add( i++, new MenuItem("-") );
 
             int strategyCount = i;
-            Configuration configuration = controller.GetConfigurationCopy();
+            Configuration configuration = reload ? controller.GetConfigurationCopy() : controller.GetCurrentConfiguration();
             foreach (var server in configuration.configs)
             {
                 MenuItem item = new MenuItem(server.FriendlyName());
@@ -897,6 +898,19 @@ namespace Shadowsocks.View
         public void ShowLogForm_HotKey()
         {
             ShowLogForm();
+        }
+
+        private void SpeedTestItem_Click(object sender, EventArgs e)
+        {
+            var menu = sender as MenuItem;
+            if (menu != null)
+                menu.Enabled = false;
+            Action ac = () =>
+            {
+                menu.Enabled = true;
+                UpdateServersMenu(false);
+            };
+            controller.SpeedTest(ac);
         }
     }
 }

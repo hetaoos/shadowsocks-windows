@@ -674,5 +674,14 @@ namespace Shadowsocks.Controller
 
         #endregion
 
+        internal void SpeedTest(Action onFinish)
+        {
+            //Action ac = () =>
+            //{
+
+            //};
+            var p = new SpeedTester(this, _config);
+            p.Run(onFinish);
+        }
     }
 }
